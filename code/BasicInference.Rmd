@@ -1,0 +1,129 @@
+---
+title: ''
+author: "Arthur Johnson"
+date: "2024-12-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+new_df1<-new_df
+```
+
+
+```{r}
+# Separate qualitative variables (e.g., company names, sectors) and the response variable
+qualitative_vars <- df %>% select(V1, Sector)  # Replace with your column names
+response_var <- df %>% select(`2015 PRICE VAR [%]`)  # Replace 'Price_Change' with the actual column name
+
+# Select only numeric predictors (exclude qualitative variables and response variable)
+quantitative_vars <- df %>% select(where(is.numeric), -`2015 PRICE VAR [%]`)
+```
+
+```{r}
+# Scale quantitative variables
+quantitative_vars_scaled <- scale(quantitative_vars)
+
+nzv <- nearZeroVar(quantitative_vars_scaled, saveMetrics = TRUE)
+
+# Remove columns with zero or near-zero variance
+quantitative_vars_scaled <- quantitative_vars_scaled[, !nzv$nzv]
+# Perform PCA
+pca_result <- prcomp(quantitative_vars_scaled, center = TRUE, scale. = TRUE)
+
+# Summary of PCA
+summary(pca_result)
+```
+
+
+
+```{r}
+distance_matrix <- dist(quantitative_vars_scaled, method = "euclidean")
+```
+
+```{r}
+# Perform hierarchical clustering
+hc <- hclust(distance_matrix, method = "ward.D")
+
+# Plot the dendrogram
+plot(hc, labels = FALSE, main = "Hierarchical Clustering Dendrogram")
+
+```
+
+```{r}
+# Cut tree into desired number of clusters
+num_clusters <- 5  # Replace with your desired number of clusters
+clusters <- cutree(hc, k = num_clusters)
+df <- as.data.frame(df)
+# Add cluster assignments to the original dataset
+df$Cluster <- as.factor(clusters)
+# View cluster assignments
+table(df$Cluster)
+```
+
+```{r}
+library(dplyr)
+
+# Summarize numeric variables by cluster
+cluster_summary <- df %>%
+  group_by(Cluster) %>%
+  summarize(across(where(is.numeric), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"), .groups = "drop")
+
+# View the summary
+print(cluster_summary)
+
+```
+
+```{r}
+library(ggplot2)
+
+# Example: Compare revenue across clusters
+ggplot(df, aes(x = as.factor(Cluster), y = Revenue, fill = as.factor(Cluster))) +
+  geom_boxplot() +
+  labs(title = "Revenue by Cluster", x = "Cluster", y = "Revenue") +
+  theme_minimal()
+
+```
+
+```{r}
+# Example: Count sectors within each cluster
+sector_distribution <- df %>%
+  group_by(Cluster, Sector) %>%
+  summarize(Count = n(), .groups = "drop")
+
+# View sector distribution
+print(sector_distribution)
+
+```
+
+```{r}
+# Boxplot of Price_Change by Cluster
+ggplot(df, aes(x = as.factor(Cluster), y = `2015 PRICE VAR [%]`, fill = as.factor(Cluster))) +
+  geom_boxplot() +
+  labs(title = "Price Change by Cluster", x = "Cluster", y = "Price Change (%)") +
+  theme_minimal()
+
+```
+
+```{r}
+# Identify potential outliers
+outliers <- df %>%
+  group_by(Cluster) %>%
+  filter(Revenue > quantile(Revenue, 0.95, na.rm = TRUE))  # Example for Revenue
+
+print(outliers)
+
+```
+
+```{r}
+# Example: Regression using clusters as predictors
+df1 <- df %>% select(where(is.numeric))
+lm_model <- lm(`2015 PRICE VAR [%]` ~ ., data = df1)
+summary(lm_model)
+```
+
+
+

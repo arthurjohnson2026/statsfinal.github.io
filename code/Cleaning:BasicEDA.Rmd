@@ -1,0 +1,236 @@
+---
+title: ''
+author: "Arthur Johnson"
+date: "2024-12-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(data.table)
+library(corrplot)
+set.seed(123)
+```
+
+```{r}
+file_path <- "/Users/arthurjohnson/Downloads/archive/2014_Financial_Data.csv"
+df <- fread(file_path)
+
+df <- df[!apply(is.na(df), 1, all), ]
+
+summary(df)
+```
+
+```{r}
+# Class distribution
+ggplot(df, aes(x = as.factor(Class))) +
+  geom_bar(fill = "steelblue") +
+  ggtitle("Class Distribution") +
+  xlab("Class") +
+  ylab("Count") +
+  theme_minimal()
+```
+
+
+```{r}
+# Sector distribution
+ggplot(df, aes(x = reorder(Sector, -table(Sector)[Sector]))) +
+  geom_bar(fill = "coral") +
+  ggtitle("Sector Distribution") +
+  xlab("Sector") +
+  ylab("Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+```{r}
+# Boxplot of 2015 price variation
+ggplot(df, aes(x = Sector, y = `2015 PRICE VAR [%]`)) +
+  geom_boxplot(outlier.color = "red", fill = "lightblue") +
+  ggtitle("2015 Price Variation by Sector") +
+  xlab("Sector") +
+  ylab("2015 Price Variation [%]") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r}
+# Identify stocks with > 500% price variation
+gain_threshold <- 500
+top_gainers <- df %>% filter(`2015 PRICE VAR [%]` > gain_threshold)
+
+# Print top gainers
+print(top_gainers)
+
+# Remove these stocks if deemed inorganic
+df <- df %>% filter(!(`2015 PRICE VAR [%]` > gain_threshold))
+
+```
+
+```{r}
+# Plot N/A and 0 Ratios
+missing_counts <- colSums(is.na(df))
+zero_counts <- colSums(df == 0, na.rm = TRUE)
+
+total_rows <- nrow(df)
+missing_percent <- (missing_counts / total_rows) * 100
+zero_percent <- (zero_counts / total_rows) * 100
+
+missing_data <- data.frame(
+  Column = names(df),
+  Percent = missing_percent
+) %>%
+  arrange(desc(Percent)) %>%
+  head(30)
+
+zero_data <- data.frame(
+  Column = names(df),
+  Percent = zero_percent
+) %>%
+  arrange(desc(Percent)) %>%
+  head(30)
+
+ggplot(missing_data, aes(x = reorder(Column, Percent), y = Percent)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +
+  ggtitle("Variable NA-Dominance [%]") +
+  xlab("Variables") +
+  ylab("NA-Dominance [%]") +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.9)) 
+
+ggplot(zero_data, aes(x = reorder(Column, Percent), y = Percent)) +
+  geom_bar(stat = "identity", fill = "darkorange") +
+  coord_flip() +
+  ggtitle("Variable Zero-Dominance [%]") +
+  xlab("Variables") +
+  ylab("Zero-Dominance [%]") +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.9)) 
+
+```
+
+```{r}
+# Count missing (NA) and zero values per column
+missing_counts <- colSums(is.na(df))
+zero_counts <- colSums(df == 0, na.rm = TRUE)
+
+# Calculate percentages
+total_rows <- nrow(df)
+missing_percent <- (missing_counts / total_rows) * 100
+zero_percent <- (zero_counts / total_rows) * 100
+```
+
+```{r}
+# Identify columns to drop, impute, or flag
+columns_to_drop_na <- names(missing_percent[missing_percent > 50])
+columns_to_impute_na <- names(missing_percent[missing_percent > 10 & missing_percent <= 50])
+columns_to_flag_zero <- names(zero_percent[zero_percent > 50])
+```
+
+```{r}
+# Drop columns with >50% missing values
+df <- df %>% select(-all_of(columns_to_drop_na))
+
+```
+
+
+
+```{r}
+cat(sprintf("Dropped columns due to >50%% NAs: %d\n", length(columns_to_drop_na)))
+cat(sprintf("Imputed columns with 10-50%% NAs: %d\n", length(columns_to_impute_na)))
+cat(sprintf("Created binary flags for >50%% zero values: %d\n", length(columns_to_flag_zero)))
+
+print(dim(df))
+
+```
+
+
+
+```{r}
+# Count rows with any NA values
+rows_with_na <- sum(rowSums(is.na(df)) > 0)
+
+# Print the result
+cat(sprintf("Number of rows with NAs: %d\n", rows_with_na))
+
+```
+
+```{r}
+# Define similarity threshold (e.g., 10%)
+revenue_threshold <- 0.1  # 10%
+impute_by_sector_and_revenue <- function(data, group_col, target_cols, revenue_col, threshold) {
+  # Group the data by the specified column (e.g., Sector)
+  grouped_data <- data %>% group_by(across(all_of(group_col)))
+  
+  # Iterate over target columns
+  for (col in target_cols) {
+    grouped_data <- grouped_data %>%
+      mutate(
+        !!col := ifelse(
+          is.na(.data[[col]]),
+          {
+            # Current row revenue
+            current_revenue <- .data[[revenue_col]]
+            
+            # Find similar revenues in the group
+            similar_rows <- abs(.data[[revenue_col]] - current_revenue) / current_revenue <= threshold
+            
+            # Calculate mean for similar rows in the current column
+            mean(.data[[col]][similar_rows], na.rm = TRUE)
+          },
+          .data[[col]]
+        )
+      )
+  }
+  
+  # Ungroup the data after imputation
+  return(ungroup(grouped_data))
+}
+
+```
+
+```{r}
+# Columns to impute
+columns_to_impute <- names(df)[colSums(is.na(df)) > 0]  # Only columns with NAs
+
+# Impute missing values
+df <- impute_by_sector_and_revenue(
+  data = df,
+  group_col = "Sector",         # Group by sector
+  target_cols = columns_to_impute, 
+  revenue_col = "Revenue",      # Use Revenue for similarity
+  threshold = revenue_threshold # Revenue similarity threshold
+)
+```
+```{r}
+# Verify that there are no remaining NAs
+sum(is.na(df))  # Should return 0
+summary(df[columns_to_impute])
+```
+
+```{r}
+# Compute the correlation matrix for the reduced dataset
+cor_matrix_reduced <- cor(df, use = "pairwise.complete.obs")
+
+```
+
+
+```{r}
+# Create a correlation plot
+corrplot(cor_matrix_reduced, method = "color", type = "upper",
+         col = colorRampPalette(c("blue", "white", "red"))(200),
+         tl.pos = "n",          # Remove variable names if too many
+         title = "Correlation Heatmap of Reduced Dataset",
+         mar = c(0, 0, 2, 0))   # Adjust margins for the title
+
+```

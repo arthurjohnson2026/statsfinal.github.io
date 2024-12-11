@@ -1,0 +1,197 @@
+---
+title: "Untitled"
+author: "Arthur Johnson"
+date: "2024-12-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+filter_selected_variables <- function(data) {
+  # Define the selected variables
+  selected_vars <- c(
+    "Revenue",
+    "Gross Profit",
+    "Operating Income",
+    "Net Income",
+    "EPS",
+    "EBITDA",
+    "EBIT Margin",
+    "Profit Margin",
+    "Free Cash Flow",
+    "returnOnEquity",
+    "Price to Sales Ratio",
+    "Total assets",
+    "Total liabilities",
+    "Total shareholders equity",
+    "Operating Cash Flow",
+    "Capex to Depreciation",
+    "Gross Profit Growth",
+    "Net Income Growth",
+    "2015 PRICE VAR [%]"
+  )
+  
+  # Subset the dataframe to include only the selected rows
+  filtered_data <- data[, colnames(data) %in% selected_vars]
+  
+  # Return the filtered dataframe
+  return(filtered_data)
+}
+
+# Example usage:
+# Assuming `df` is your dataframe
+# filtered_df <- filter_selected_variables(df)
+filtered_df <- filter_selected_variables(new_df)
+
+```
+
+
+```{r}
+
+# Step 2: Standardize the data
+scaled_data <- scale(filtered_df, center = TRUE, scale = TRUE)
+
+# Step 3: Determine the number of factors using parallel analysis
+parallel_result <- fa.parallel(scaled_data, fa = "fa", n.iter = 100, show.legend = TRUE)
+```
+```{r}
+# Load necessary library
+library(psych)
+
+# Step 1: Calculate eigenvalues
+cor_matrix <- cor(scaled_data)  # Correlation matrix of scaled data
+eigenvalues <- eigen(cor_matrix)$values
+
+# Step 2: Create the scree plot
+plot(
+  eigenvalues, 
+  type = "b", 
+  main = "Scree Plot", 
+  xlab = "Factor Number", 
+  ylab = "Eigenvalue",
+  pch = 20, 
+  col = "blue"
+)
+abline(h = 1, col = "red", lty = 2)  # Kaiser criterion: Retain factors with eigenvalues > 1
+
+```
+
+```{r}
+# Based on the results, choose the number of factors (e.g., 3 factors)
+n_factors <- 4
+
+# Step 4: Perform Exploratory Factor Analysis
+efa_result <- factanal(scaled_data, factors = n_factors, rotation = "varimax")
+
+# Step 5: View the results
+print(efa_result)
+```
+
+
+# Step 6: Analyze factor loadings
+# Display factor loadings with a cutoff for better interpretability
+loadings <- efa_result$loadings
+print(loadings, cutoff = 0.3) # Shows only loadings above 0.3
+```{r}
+fa.diagram(efa_result)
+```
+
+
+
+
+```{r}
+library(lavaan)
+library(semPlot)
+scaled_data<-as.data.frame(scaled_data)
+
+# Simplified model specification
+model <- "
+  # Factor 1: Operational Scale
+  Operational_Scale =~ Revenue + Gross_Profit + Operating_Income
+
+  # Factor 2: Financial Stability
+  Financial_Stability =~ Total_assets + Net_Income
+"
+
+# Fit the model using lavaan
+fit <- cfa(model, data = scaled_data)
+
+# Summarize the results with fit indices
+summary(fit, fit.measures = TRUE, standardized = TRUE)
+
+semPaths(
+  fit,
+  what = "std",            # Show standardized estimates
+  whatLabels = "std",      # Display standardized estimates on paths
+  layout = "circle",       # Layout type (circle, tree, etc.)
+  style = "ram",           # RAM diagram style
+  edge.label.cex = 0.8,    # Adjust label size
+  label.cex = 1.0,         # Adjust variable label size
+  residuals = TRUE,        # Show residuals
+  intercepts = FALSE,      # Hide intercepts for simplicity
+  optimizeLatRes = TRUE    # Optimize latent variable placement
+)
+```
+
+```{r}
+# Define the CFA model with latent factor variances fixed to 1
+model <- '
+  Operational_Scale =~ Revenue + Gross_Profit + Operating_Income
+  Financial_Stability =~ Total_assets + Net_Income
+
+  # Fix the latent factor variances to 1 for identification
+  Operational_Scale ~~ 1*Operational_Scale
+  Financial_Stability ~~ 1*Financial_Stability
+
+  # Allow covariance between latent factors
+  Operational_Scale ~~ Financial_Stability
+'
+
+# Fit the model with standardized latent variable variances
+fit <- cfa(model, data = scaled_data, std.lv = TRUE)  # std.lv ensures latent variances are 1
+summary(fit, fit.measures = TRUE, standardized = TRUE)
+semPaths(fit, 
+         what = "std",           # Display standardized estimates
+         layout = "circle",      # Layout options: circle, tree, spring
+         edge.label.cex = 1,     # Adjust size of edge labels
+         sizeMan = 8,            # Size of manifest variables
+         sizeLat = 10,           # Size of latent variables
+         residuals = TRUE,       # Include residuals
+         intercepts = FALSE,     # Hide intercepts
+         edge.color = "black")   # Set edge color
+```
+
+
+```{r}
+# Define the model
+model <- '
+  Operational_Scale =~ Revenue + Gross_Profit + Operating_Income
+  Financial_Stability =~ Total_assets + Total_liabilities + Total_shareholders_equity
+  Operational_Scale ~~ Financial_Stability
+'
+
+# Fit the model with error handling
+fit <- tryCatch({
+  cfa(model, data = scaled_data, std.lv = TRUE, control = list(iter.max = 10000))
+}, error = function(e) {
+  message("Model estimation failed: ", e$message)
+  return(NULL)
+})
+
+# Check if the model converged
+if (!is.null(fit)) {
+  converged <- inspect(fit, "converged")
+  if (converged) {
+    # Display fit measures if the model converged
+    summary(fit, fit.measures = TRUE, standardized = TRUE)
+  } else {
+    cat("Model did not converge. Check the model specification or data.")
+  }
+} else {
+  cat("Failed to fit the model. Debugging required.")
+}
+
+```

@@ -1,0 +1,133 @@
+---
+title: ''
+author: "Arthur Johnson"
+date: "2024-12-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Fit MANOVA model
+# Replace spaces with underscores in column names
+colnames(new_df) <- gsub(" ", "_", colnames(new_df))
+
+# Check the updated column names
+print(colnames(data))
+
+manova_model <- manova(cbind(Revenue, Net_Income, Total_assets, Gross_Profit, EBITDA, Gross_Profit_Growth, Operating_Cash_Flow, EPS, EBIT_Margin, Profit_Margin,returnOnEquity,Capex_to_Depreciation,Price_to_Sales_Ratio) ~ Sector, data = new_df)
+
+# Summary of MANOVA results
+summary(manova_model, test = "Wilks")
+summary(aov(manova_model))
+```
+
+```{r}
+# Load required libraries
+library(ggplot2)
+library(tidyr)
+
+# Reshape the data into long format
+data_long <- pivot_longer(
+  new_df, 
+  cols = c(Revenue, Net_Income, Total_assets, Gross_Profit, EBITDA, Gross_Profit_Growth, Operating_Cash_Flow),  # Replace with your actual variable names
+  names_to = "Variable", 
+  values_to = "Value"
+)
+
+# Plot with ggplot2
+ggplot(data_long, aes(x = Variable, y = Value, group = Sector, color = Sector)) +
+  geom_line(position = position_dodge(width = 0.2)) +  # Add lines for each sector
+  geom_point(position = position_dodge(width = 0.2), size = 3) +  # Add points for clarity
+  theme_minimal() +
+  labs(
+    title = "Comparison of Financial Metrics by Sector",
+    x = "Financial Metrics",
+    y = "Value",
+    color = "Sector"
+  ) + 
+  ylim(0, 500000000000) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+```
+    
+```{r}
+# Load necessary libraries
+# Compute mean values by Sector for each variable
+sector_means <- new_df %>%
+  group_by(Sector) %>%
+  summarise(across(
+    c(Revenue, Net_Income, Total_assets, Gross_Profit, EBITDA, Gross_Profit_Growth, Operating_Cash_Flow, EPS, EBIT_Margin, Profit_Margin,returnOnEquity,Capex_to_Depreciation,Price_to_Sales_Ratio), 
+    ~ mean(.x, na.rm = TRUE),  # Specify mean function with na.rm = TRUE for handling missing data
+    .names = "mean_{.col}"    # Rename columns with "mean_" prefix
+  ))
+
+# Reshape to long format for plotting
+sector_means_long <- pivot_longer(
+  sector_means,
+  cols = starts_with("mean_"),  # Select mean columns
+  names_to = "Variable",
+  values_to = "Value"
+)
+
+# Clean up Variable names (remove "mean_")
+sector_means_long$Variable <- gsub("mean_", "", sector_means_long$Variable)
+
+```  
+    
+```{r}
+# Plot sector-wise mean values
+ggplot(sector_means_long, aes(x = Variable, y = Value, group = Sector, color = Sector)) +
+  geom_line(size = 1) +  # Add lines for each sector
+  geom_point(size = 3) + # Add points for clarity
+  theme_minimal() +
+  labs(
+    title = "Mean Financial Metrics by Sector",
+    x = "Financial Metrics",
+    y = "Mean Value",
+    color = "Sector"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+```
+    
+    
+```{r}
+library(dplyr)
+
+# Add an indicator variable based on another column
+new_df<- new_df %>%
+  mutate(Indicator = ifelse(`2015_PRICE_VAR_[%]` > 0, 1, 0))  # Replace 'Target_Column' with the actual column name
+```
+
+```{r}
+# Select the specified variables
+selected_data <- new_df[, c("Revenue", "Net_Income", "Total_assets", "Gross_Profit", "EBITDA", 
+                          "Gross_Profit_Growth", "Operating_Cash_Flow", "EPS", "EBIT_Margin", 
+                          "Profit_Margin", "returnOnEquity", "Capex_to_Depreciation", 
+                          "Price_to_Sales_Ratio", "Indicator")]
+
+# View the selected data
+head(selected_data)
+
+# Assume your indicator variable is named "Indicator"
+group_1 <- selected_data[selected_data$Indicator == 1, ]
+group_0 <- selected_data[selected_data$Indicator == 0, ]
+
+# Remove the indicator column (not part of the test)
+group_1 <- group_1[, sapply(group_1, is.numeric)]
+group_0 <- group_0[, sapply(group_0, is.numeric)]
+
+```
+
+```{r}
+# Perform Hotelling's T^2 test
+hotelling_result <- hotelling.test(group_1, group_0)
+
+# View the results
+print(hotelling_result)
+
+```
+

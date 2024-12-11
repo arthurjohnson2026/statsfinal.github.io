@@ -1,0 +1,265 @@
+---
+title: "Untitled"
+author: "Arthur Johnson"
+date: "2024-12-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+new_df1<-new_df
+```
+
+
+```{r}
+# Separate qualitative variables (e.g., company names, sectors) and the response variable
+qualitative_vars <- new_df %>% select(V1, Sector, Cluster)  # Replace with your column names
+response_var <- new_df %>% select(`2015 PRICE VAR [%]`)  # Replace 'Price_Change' with the actual column name
+
+# Select only numeric predictors (exclude qualitative variables and response variable)
+quantitative_vars <- new_df %>% select(where(is.numeric), -`2015 PRICE VAR [%]`)
+```
+
+```{r}
+# Scale quantitative variables
+quantitative_vars_scaled <- scale(quantitative_vars)
+
+nzv <- nearZeroVar(quantitative_vars_scaled, saveMetrics = TRUE)
+
+# Remove columns with zero or near-zero variance
+quantitative_vars_scaled <- quantitative_vars_scaled[, !nzv$nzv]
+# Perform PCA
+pca_result <- prcomp(quantitative_vars_scaled, center = TRUE, scale. = TRUE)
+
+# Summary of PCA
+summary(pca_result)
+```
+
+```{r}
+# Scree plot
+screeplot(pca_result, type = "lines", main = "Scree Plot")
+```
+
+
+```{r}
+variance_explained <- pca_result$sdev^2 / sum(pca_result$sdev^2)
+cumulative_variance <- cumsum(variance_explained)
+plot(cumulative_variance, type = "b", xlab = "Principal Component", 
+     ylab = "Cumulative Proportion of Variance Explained", 
+     main = "Cumulative Variance Explained by PCA")
+```
+
+```{r}
+pca_loadings <- pca_result$rotation
+print(pca_loadings)
+
+for (i in 1:10) {
+  barplot(pca_result$rotation[, i], main = paste("PC", i), las = 2)
+}
+colnames(data)
+pca_loadings <- pca_result$rotation
+print(pca_loadings[,1:3])
+```
+
+
+```{r}
+distance_matrix <- dist(quantitative_vars_scaled, method = "euclidean")
+```
+
+```{r}
+# Perform hierarchical clustering
+hc <- hclust(distance_matrix, method = "ward.D")
+
+# Plot the dendrogram
+plot(hc, labels = FALSE, main = "Hierarchical Clustering Dendrogram")
+
+```
+
+```{r}
+# Cut tree into desired number of clusters
+num_clusters <- 5  # Replace with your desired number of clusters
+clusters <- cutree(hc, k = num_clusters)
+new_df <- as.data.frame(new_df)
+# Add cluster assignments to the original dataset
+new_df$Cluster <- as.factor(clusters)
+# View cluster assignments
+table(new_df$Cluster)
+```
+
+```{r}
+library(dplyr)
+
+# Summarize numeric variables by cluster
+cluster_summary <- new_df %>%
+  group_by(Cluster) %>%
+  summarize(across(where(is.numeric), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"), .groups = "drop")
+
+# View the summary
+print(cluster_summary)
+
+```
+
+```{r}
+library(ggplot2)
+
+# Example: Compare revenue across clusters
+ggplot(new_df, aes(x = as.factor(Cluster), y = Revenue, fill = as.factor(Cluster))) +
+  geom_boxplot() +
+  labs(title = "Revenue by Cluster", x = "Cluster", y = "Revenue") +
+  theme_minimal()
+
+```
+```{r}
+# Decide the number of clusters based on the dendrogram structure
+clusters <- cutree(hc, k = 5) # Adjust 'k' to the desired number of clusters
+
+# Step 9: Visualize clusters in PCA space (optional)
+fviz_cluster(list(data = pc_data, cluster = clusters), 
+             geom = "point", ellipse.type = "convex",
+             main = "Clusters in PCA Space")
+```
+```{r}
+# Example: Count sectors within each cluster
+sector_distribution <- new_df %>%
+  group_by(Cluster, Sector) %>%
+  summarize(Count = n(), .groups = "drop")
+
+# View sector distribution
+print(sector_distribution)
+
+```
+
+```{r}
+# Boxplot of Price_Change by Cluster
+ggplot(new_df, aes(x = as.factor(Cluster), y = `2015 PRICE VAR [%]`, fill = as.factor(Cluster))) +
+  geom_boxplot() +
+  labs(title = "Price Change by Cluster", x = "Cluster", y = "Price Change (%)") +
+  theme_minimal()
+
+```
+
+```{r}
+# Identify potential outliers
+outliers <- df %>%
+  group_by(Cluster) %>%
+  filter(Revenue > quantile(Revenue, 0.95, na.rm = TRUE))  # Example for Revenue
+
+print(outliers)
+
+```
+
+```{r}
+# Example: Regression using clusters as predictors
+df1 <- new_df %>% select(where(is.numeric))
+lm_model <- lm(`2015 PRICE VAR [%]` ~ ., data = df1)
+summary(lm_model)
+```
+
+```{r}
+# Load necessary libraries
+library(factoextra)
+library(cluster)
+
+
+# Step 3: Select the top components
+# You can decide how many components to keep by checking the variance explained
+fviz_eig(pca_result) # Visualize explained variance to choose components
+pc_data <- pca_result$x[, 1:8] # Keep the top 5 components (adjust as needed)
+
+# Step 4: Calculate distance matrix
+# Use Euclidean distance or other suitable distance metrics
+dist_matrix <- dist(pc_data, method = "euclidean")
+
+# Step 5: Perform hierarchical clustering
+hc <- hclust(dist_matrix, method = "ward.D2") # Ward's method minimizes variance within clusters
+
+# Step 6: Visualize the dendrogram
+plot(hc, main = "Hierarchical Clustering Dendrogram", xlab = "", sub = "", cex = 0.7)
+```
+
+```{r}
+# Step 7: Cut the dendrogram to form clusters
+# Decide the number of clusters based on the dendrogram structure
+clusters <- cutree(hc, k = 6) # Adjust 'k' to the desired number of clusters
+
+# Step 8: Add cluster assignments to the original dataset
+new_df$ClusterPCA <- clusters
+
+# Step 9: Visualize clusters in PCA space (optional)
+fviz_cluster(list(data = pc_data, cluster = clusters), 
+             geom = "point", ellipse.type = "convex",
+             main = "Clusters in PCA Space")
+```
+
+
+
+```{r}
+library(dplyr)
+
+# Summarize numeric variables by cluster
+cluster_summary <- new_df %>%
+  group_by(ClusterPCA) %>%
+  summarize(across(where(is.numeric), ~ mean(.x, na.rm = TRUE), .names = "mean_{.col}"), .groups = "drop")
+
+# View the summary
+print(cluster_summary)
+
+```
+
+```{r}
+library(ggplot2)
+
+# Example: Compare revenue across clusters
+ggplot(new_df, aes(x = as.factor(ClusterPCA), y = Revenue, fill = as.factor(ClusterPCA))) +
+  geom_boxplot() +
+  labs(title = "Revenue by Cluster", x = "Cluster", y = "Revenue") +
+  theme_minimal()
+
+```
+
+```{r}
+# Example: Count sectors within each cluster
+sector_distribution <- new_df %>%
+  group_by(ClusterPCA, Sector) %>%
+  summarize(Count = n(), .groups = "drop")
+
+# View sector distribution
+print(sector_distribution)
+
+ggplot(sector_distribution, aes(x = ClusterPCA, y = Count, fill = Sector)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Sector Distribution by Cluster",
+       x = "Cluster",
+       y = "Count",
+       fill = "Sector") +
+  theme_minimal()
+```
+
+```{r}
+# Boxplot of Price_Change by Cluster
+ggplot(new_df, aes(x = as.factor(ClusterPCA), y = `2015 PRICE VAR [%]`, fill = as.factor(ClusterPCA))) +
+  geom_boxplot() +
+  labs(title = "Price Change by Cluster", x = "Cluster", y = "Price Change (%)") +
+  theme_minimal()
+
+```
+
+```{r}
+# Identify potential outliers
+outliers <- df %>%
+  group_by(ClusterPCA) %>%
+  filter(Revenue > quantile(Revenue, 0.95, na.rm = TRUE))  # Example for Revenue
+
+print(outliers)
+
+```
+
+```{r}
+# Example: Regression using clusters as predictors
+df1 <- new_df %>% select(where(is.numeric))
+lm_model <- lm(`2015 PRICE VAR [%]` ~ ., data = df1)
+summary(lm_model)
+```
