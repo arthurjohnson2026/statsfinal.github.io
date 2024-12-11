@@ -35,6 +35,7 @@ This document explores the analysis of SEC 10-K financial filings, aiming to cla
 - Target Variables:
   - **Percent Change in Stock Price (next year)**
   - Binary Indicator: **Up (1)** or **Down (0)**.
+<img src="images/Screenshot 2024-12-11 at 6.25.31 PM.png" alt="Classification" width="600">
 
 ---
 
