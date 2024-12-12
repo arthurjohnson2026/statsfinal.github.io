@@ -114,9 +114,15 @@ Proposed two primary latent factors:
   - Total Assets (0.722)
   - Net Income (1.245)
 
+These factors were run against four variables (\lambda), which were revenue, gross profit, operating income, total assets, net income.
+
+The flow chart shows the directionality and strength of the latent relationships.
+
 <img src="images/Screenshot 2024-12-12 at 11.14.33 AM.png" alt="drawing" width="400"/>
 
-- Evaluated model fit using CFI, RMSEA, and SRMR, identifying areas for refinement
+Also, the simplified equation relationships are shown below:
+
+<img src="images/Screenshot 2024-12-12 at 11.28.07 AM.png" alt="drawing" width="400"/>
 
 ##### Model Fit Metrics and Analysis
 - Comparative Fit Index (CFI): 0.88
