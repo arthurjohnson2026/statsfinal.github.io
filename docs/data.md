@@ -43,25 +43,25 @@
 
 | Financial Term | Brief Description |
 |---------------|-------------------|
-| Revenue | Total amount of money earned by the company from its primary business activities before any expenses are subtracted |
-| Gross Profit | Total revenue minus the cost of goods sold (COGS); represents the profit a company makes after deducting the direct costs of producing its goods or services |
-| Operating Income | Profit earned from a company's core business operations, calculated by subtracting operating expenses from gross profit |
-| Net Income | The bottom line profit after all expenses, taxes, and costs have been deducted from total revenue |
-| EPS (Earnings Per Share) | The portion of a company's profit allocated to each outstanding share of common stock |
-| EBITDA | Earnings Before Interest, Taxes, Depreciation, and Amortization; a measure of a company's overall financial performance |
-| EBIT Margin | Earnings Before Interest and Taxes divided by total revenue, showing profitability before accounting for interest and taxes |
-| Profit Margin | Percentage of revenue that translates into profits, calculated by dividing net income by total revenue |
-| Free Cash Flow | Cash a company generates after accounting for cash outflows to support operations and maintain capital assets |
-| Return on Equity (ROE) | Measure of a company's profitability relative to shareholders' equity, showing how efficiently it uses shareholders' investments |
-| Price to Sales Ratio | Comparison of a company's stock price to its revenues, indicating how much investors are willing to pay per dollar of sales |
-| Total Assets | The total value of all resources owned by a company that have economic value |
-| Total Liabilities | All financial obligations and debts owed by the company |
-| Total Shareholders Equity | The total value of the company owned by shareholders, calculated as total assets minus total liabilities |
-| Operating Cash Flow | Cash generated from normal business operations, excluding external investment and financing activities |
-| Capex to Depreciation | Ratio of capital expenditures to depreciation, showing how much a company is investing in new fixed assets |
-| Gross Profit Growth | Percentage increase in gross profit from one period to another |
-| Net Income Growth | Percentage increase in net income from one period to another |
-| 2015 Price Var [%] | Percentage change in stock price during the year 2015 |
+|`Revenue` | Total amount of money earned by the company from its primary business activities before any expenses are subtracted |
+| `Gross Profit` | Total revenue minus the cost of goods sold (COGS); represents the profit a company makes after deducting the direct costs of producing its goods or services |
+| `Operating Income` | Profit earned from a company's core business operations, calculated by subtracting operating expenses from gross profit |
+| `Net Income` | The bottom line profit after all expenses, taxes, and costs have been deducted from total revenue |
+| `EPS (Earnings Per Share)` | The portion of a company's profit allocated to each outstanding share of common stock |
+| `EBITDA` | Earnings Before Interest, Taxes, Depreciation, and Amortization; a measure of a company's overall financial performance |
+| `EBIT Margin` | Earnings Before Interest and Taxes divided by total revenue, showing profitability before accounting for interest and taxes |
+| `Profit Margin` | Percentage of revenue that translates into profits, calculated by dividing net income by total revenue |
+| `Free Cash Flow` | Cash a company generates after accounting for cash outflows to support operations and maintain capital assets |
+| `Return on Equity (ROE)` | Measure of a company's profitability relative to shareholders' equity, showing how efficiently it uses shareholders' investments |
+| `Price to Sales Ratio` | Comparison of a company's stock price to its revenues, indicating how much investors are willing to pay per dollar of sales |
+| `Total Assets` | The total value of all resources owned by a company that have economic value |
+| `Total Liabilities` | All financial obligations and debts owed by the company |
+| `Total Shareholders Equity` | The total value of the company owned by shareholders, calculated as total assets minus total liabilities |
+| `Operating Cash Flow` | Cash generated from normal business operations, excluding external investment and financing activities |
+| `Capex to Depreciation` | Ratio of capital expenditures to depreciation, showing how much a company is investing in new fixed assets |
+| `Gross Profit Growth` | Percentage increase in gross profit from one period to another |
+| `Net Income Growth` | Percentage increase in net income from one period to another |
+| `2015 Price Var [%]` | Percentage change in stock price during the year 2015 |
 
 ### Outlier Removal
 
