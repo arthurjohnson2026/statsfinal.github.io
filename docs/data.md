@@ -1,10 +1,10 @@
-## Table of Contents
-
 - [Data Description](data.md) **YOU'RE HERE**
 - [Methodology](methodology.md)
 - [Results](results.md)
 - [Conclusion](conclusions.md)
 - [Code and Notebooks]()
+
+
 
 **Dataset Overview**:
 - Data Source: [Financial Modeling Prep](https://site.financialmodelingprep.com/)
