@@ -32,8 +32,8 @@
 - Applied Minimax Linkage method
 - Produced 6 uneven clusters
 - Observed significant differences in:
- - Revenue between clusters
- - Price change between clusters
+   - Revenue between clusters
+   - Price change between clusters
 
 ### Factor Analysis
 #### Exploratory Factor Analysis
