@@ -88,7 +88,7 @@ Full Loadings:
 
 Uniqueness Values:
 
-<img src="images/Screenshot 2024-12-11 at 11.08.03 PM.png" alt="drawing" width="600"/>
+<img src="images/Screenshot 2024-12-11 at 11.08.03 PM.png" alt="drawing" width="400"/>
 
 
 #### Confirmatory Factor Analysis
