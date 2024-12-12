@@ -1,10 +1,10 @@
-## Table of Contents
 
 - [Data Description](data.md)
 - [Methodology](methodology.md)
 - [Results](results.md) **YOU'RE HERE**
 - [Conclusion](conclusions.md)
 - [Code and Notebooks]()
+
 
 
 ### Principal Component Analysis (PCA)
