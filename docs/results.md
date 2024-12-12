@@ -3,7 +3,6 @@
    - For 80% variance explained, would need 16 Principal Components
 <img src="images/Screenshot 2024-12-11 at 6.27.00 PM.png" alt="drawing" width="600"/>
 - Use 8 PC's based on Scree Plot
-<img src="images/Survival_by_class.png" alt="drawing" width="600"/>
 <img src="images/Screenshot 2024-12-11 at 6.26.53 PM.png" alt="drawing" width="600"/>
 - 8 principal components explain approximately 65% of data variance
 
