@@ -42,8 +42,22 @@ This document explores the analysis of SEC 10-K financial filings, aiming to cla
 
 ## Key Findings
 
+- **Principal Components and Noise:** Using PCA, eight components explained about 65% of variance, indicating substantial complexity and noise in the data, making it challenging to derive clear, stable groupings.  
+- **Latent Factors via Factor Analysis:** EFA and CFA revealed four main latent constructs—operational scale, financial stability, profitability, and growth potential—though model fit and interpretability remained areas for improvement.  
+- **Sector-Based Differences:** MANOVA showed statistically significant differences across sectors for most financial metrics, suggesting that industry context plays a crucial role in firms’ financial characteristics.
+
 ## Future Work
 
+- **Refine Scope and Preprocessing:** Narrow the analysis to a single sector and apply more robust data cleaning and dimensionality reduction methods to improve clarity and interpretability.  
+- **Longitudinal and Advanced Modeling:** Conduct year-to-year comparisons, consider panel data with fixed effects, and explore alternative modeling techniques (e.g., more flexible factor structures, advanced time-series analyses) to better capture trends and enhance model fit.
+
+## Literature/Bibliography
+
+Title: "Estimating Latent Asset-Pricing Factors"
+Authors: Martin Lettau and Markus Pelger
+Journal Published: Not specified (working paper on SSRN)
+Year Published: 2019 (Draft dated January 10)
+DOI: https://ssrn.com/abstract=3175556 
 
 
 ---
