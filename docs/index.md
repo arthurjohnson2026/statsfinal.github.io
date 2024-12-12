@@ -13,7 +13,7 @@ output:
 - [Methodology](methodology.md)
 - [Results](results.md)
 - [Conclusion](conclusions.md)
-- [Code and Notebooks](https://github.com/arthurjohnson2026/statsfinal.github.io)
+- All code: https://github.com/arthurjohnson2026/statsfinal.github.io 
 
 
 
