@@ -1,3 +1,11 @@
+## Table of Contents
+
+- [Data Description](data.md)
+- [Methodology](methodology.md) **YOU'RE HERE**
+- [Results](results.md)
+- [Conclusion](conclusions.md)
+- [Code and Notebooks]()
+
 # Methodology
 
 ## Data Collection and Preprocessing
