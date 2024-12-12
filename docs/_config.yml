@@ -5,7 +5,7 @@ url: "https://arthurjohnson2026.github.io/statsfinal.github.io/"  # Replace with
 author: Arthur Johnson  # Your name
 
 # Theme settings
-theme: slate # You can replace this with other supported GitHub Pages themes like jekyll-theme-cayman, slate, etc.
+theme: minima # You can replace this with other supported GitHub Pages themes like jekyll-theme-cayman, slate, etc.
 
 header_pages:
   - data.md
