@@ -9,6 +9,14 @@ output:
     keep_md: true
 ---
 
+- [Data Description](data.md)
+- [Methodology](methodology.md)
+- [Results](results.md)
+- [Conclusion](conclusions.md)
+- [Code and Notebooks]()
+
+
+
 # Classifying Company Performance through PCA, Clustering, and Factor Analysis
 
 This document explores the analysis of SEC 10-K financial filings, aiming to classify company performance using various multivariate techniques like PCA, clustering, and factor analysis.
@@ -31,15 +39,6 @@ This document explores the analysis of SEC 10-K financial filings, aiming to cla
 **Key Questions**:
 - Can multivariate analysis reveal the most critical financial ratios for predicting stock price changes?
 - How can these insights inform investment decisions?
-
-## Table of Contents
-
-- [Data Description](data.md)
-- [Methodology](methodology.md)
-- [Results](results.md)
-- [Conclusion](conclusions.md)
-- [Code and Notebooks]()
-
 
 ## Key Findings
 
