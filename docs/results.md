@@ -1,24 +1,52 @@
 ### Principal Component Analysis (PCA)
 - Conducted on initial 61 variables
    - For 80% variance explained, would need 16 Principal Components
+     
 <img src="images/Screenshot 2024-12-11 at 6.27.00 PM.png" alt="drawing" width="600"/>
+
 - Use 8 PC's based on Scree Plot
+
 <img src="images/Screenshot 2024-12-11 at 6.26.53 PM.png" alt="drawing" width="600"/>
+
 - 8 principal components explain approximately 65% of data variance
+
 <img src="images/Screenshot 2024-12-11 at 10.36.41 PM.png" alt="drawing" width="600"/>
 
+- The first 8 PC loadings (attached in the image above) seem to denote
+   - PC1: high loadings on earnings/revenue, negative to expenditures
+   - PC2: high on margins
+   - PC3: high on all value metrics per share/could show value in smaller companies
+   - PC4:High loadings on all cash/variants, shows liquidity perhaps
+   - PC5: Similar to PC3
+   - PC6: Very high on asset value metrics
+   - PC7: Super high Earning readings
+   - PC8: All Equity metrics
 
 
 ### Clustering Analysis
-- Chosen to identify homogeneous groups of companies based on their financial profiles
-- Helps provide insight into sector-independent “types” or “archetypes” within the sample
-- Utilized Hierarchical Clustering based on PCA results
+- Utilized Hierarchical Clustering based on PCA results, in order to try and see whether there were any significant groupings by metric
 - Applied Minimax Linkage method
-- Produced 6 uneven clusters
+
+<img src="images/Screenshot 2024-12-11 at 10.52.19 PM.png" alt="drawing" width="600"/>
+
+- Produced 6 uneven clusters, when plotted in PC space (PC1 and PC2)
+
+<img src="images/Screenshot 2024-12-11 at 10.52.35 PM.png" alt="drawing" width="600"/>
+
+- Appears that PC1 does the majority of the distinguishing between clusters 1, 2, 5, and 6
+- PC2 distinguishes clusters 3 and 6 from all others
+
+
 - Examined cluster means for key financial metrics, noting distinct differences in revenue and price changes across clusters
-    -Observed significant differences in:
+    -Observed differences in:
        - Revenue between clusters
+  
+<img src="images/Screenshot 2024-12-11 at 10.58.28 PM.png" alt="drawing" width="600"/>
+
        - Price change between clusters
+
+<img src="images/Screenshot 2024-12-11 at 10.58.41 PM.png" alt="drawing" width="600"/>
+
 
 ### Factor Analysis
 #### Exploratory Factor Analysis
