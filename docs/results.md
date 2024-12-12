@@ -5,6 +5,7 @@
 - Use 8 PC's based on Scree Plot
 <img src="images/Screenshot 2024-12-11 at 6.26.53 PM.png" alt="drawing" width="600"/>
 - 8 principal components explain approximately 65% of data variance
+<img src="images/Screenshot 2024-12-11 at 10.36.41 PM.png" alt="drawing" width="600"/>
 
 
 
