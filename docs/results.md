@@ -63,11 +63,11 @@ Due to uneven cluster size, and difficult PC's to interpret, the minimax prototy
 ### Factor Analysis
 #### Exploratory Factor Analysis
 - Conducted on the selected key variables, extracting four main factors representing operational scale/size, financial stability, profitability, and growth potential
-- Utilized Scree plot to determine proper number of factors
+- Utilized Scree plot to determine proper number of factors, which ended up being 6; however, based on model complexity and interpretability, 4 factors were ultimately used for analysis.
 
 <img src="images/Screenshot 2024-12-11 at 11.07.35 PM.png" alt="drawing" width="600"/>
 
-- Factor loadings guided the conceptual interpretation of each latent dimension
+- These were the interpretations of the latent factors.
 
 Factor 1: Operational Scale or Size of the Company (Loadings)
   - Revenue (0.943)
@@ -102,10 +102,7 @@ Uniqueness Values:
 
 #### Confirmatory Factor Analysis
 
-- Test a hypothesized factor structure derived from EFA and theoretical considerations
-- Validate whether proposed latent factors (e.g., operational scale, financial stability) adequately fit the observed data
-
-- Specified a two-factor model (operational scale and financial stability)
+- Based on our original factors, wanted to test whether company size and financials were valid theories for latent dimensions
 Proposed two primary latent factors:
 
 1. **Operational Scale** (Loadings)
@@ -117,16 +114,34 @@ Proposed two primary latent factors:
   - Total Assets (0.722)
   - Net Income (1.245)
 
+<img src="images/Screenshot 2024-12-12 at 11.14.33 AM.png" alt="drawing" width="400"/>
+
 - Evaluated model fit using CFI, RMSEA, and SRMR, identifying areas for refinement
 
-##### Model Fit Metrics
+##### Model Fit Metrics and Analysis
 - Comparative Fit Index (CFI): 0.88
 - Root Mean Square Error of Approximation (RMSEA): 0.391
 - Standardized Root Mean Square Residual (SRMR): 0.057
 
+- The CFA model explains relationships among financial metrics but shows room for improvement in fit (low CFI, high RMSEA)
+- Good fit in SRMR metric
+- Strong loadings for latent variables suggest good construct validity
+- Negative residual variances highlight potential concerns requiring further investigation
+- Also, it seems that there may be multicollinearity between the latent factors
+
+
 ### Multivariate Analysis of Variance (MANOVA)
-- Assesses whether multiple financial metrics vary simultaneously across different sectors or groupings
-- Provide a holistic test of sector-level differences rather than examining each metric individually
-- Focused on inter-sector differences
 - Conducted using selected financial variables as dependent measures
-- Tested sector-based differences, yielding insights into how entire financial profiles differ across industry contexts
+
+<img src="images/Screenshot 2024-12-12 at 11.16.17 AM.png" alt="drawing" width="400"/>
+
+Groups were statistically significantly different (p<.05) across all financial metrics other than: 
+- Gross_Profit_Growth
+- EPS
+- returnOnEquity 
+- Capex_to_Depreciation
+
+This indicates that some sectors do substantially differ when it comes to revenue, costs, assests, and total profit. 
+
+
+
