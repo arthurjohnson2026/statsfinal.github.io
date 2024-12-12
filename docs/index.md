@@ -52,6 +52,7 @@ This document explores the analysis of SEC 10-K financial filings, aiming to cla
     <img src="images/Screenshot 2024-12-11 at 6.25.44 PM.png" alt="Classification" width="600">
     <img src="images/Screenshot 2024-12-11 at 6.25.52 PM.png" alt="Classification" width="600">
 </div>
+
 - **Strategy**:
   - Implement thresholds to systematically remove variables with excessive missing or zero values.
 
