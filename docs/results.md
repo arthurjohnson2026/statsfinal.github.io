@@ -1,3 +1,12 @@
+## Table of Contents
+
+- [Data Description](data.md)
+- [Methodology](methodology.md)
+- [Results](results.md) **YOU'RE HERE**
+- [Conclusion](conclusions.md)
+- [Code and Notebooks]()
+
+
 ### Principal Component Analysis (PCA)
 - Conducted on initial 61 variables
    - For 80% variance explained, would need 16 Principal Components
