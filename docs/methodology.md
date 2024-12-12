@@ -25,6 +25,10 @@
 
 ### Principal Component Analysis (PCA)
 - Conducted to reduce dimensionality of financial metrics
+- Conducted on initial 61 variables
+   - For 80% variance explained, would need 16 Principal Components
+   - This is too many to interpret
+- Opted to use 8 PC's based on Scree Plot elbow, and for best interpretability
 - Key finding: 8 principal components explain approximately 65% of data variance
 
 ### Clustering Analysis
