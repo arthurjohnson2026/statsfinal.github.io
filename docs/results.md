@@ -39,20 +39,25 @@
 
 - Examined cluster means for key financial metrics, noting distinct differences in revenue and price changes across clusters
     -Observed differences in:
-       - Revenue between clusters
+
+Revenue between clusters
   
 <img src="images/Screenshot 2024-12-11 at 10.58.28 PM.png" alt="drawing" width="600"/>
 
-       - Price change between clusters
+Price change between clusters
 
 <img src="images/Screenshot 2024-12-11 at 10.58.41 PM.png" alt="drawing" width="600"/>
+
+Due to uneven cluster size, and difficult PC's to interpret, the minimax prototypes showed no real difference between clusters in a meaningful way. 
 
 
 ### Factor Analysis
 #### Exploratory Factor Analysis
-- Investigated underlying latent structures in financial data
-- Aid in interpreting complex financial indicators through a smaller set of meaningful factors.
 - Conducted on the selected key variables, extracting four main factors representing operational scale/size, financial stability, profitability, and growth potential
+- Utilized Scree plot to determine proper number of factors
+
+<img src="images/Screenshot 2024-12-11 at 11.07.35 PM.png" alt="drawing" width="600"/>
+
 - Factor loadings guided the conceptual interpretation of each latent dimension
 
 Factor 1: Operational Scale or Size of the Company (Loadings)
@@ -76,6 +81,15 @@ Factor 4: Growth Potential or Market Perception (Loadings)
   - Operating Income (0.720)
   - Gross Profit (0.379)
   - Price to Sales Ratio (-0.365)
+
+Full Loadings:
+
+<img src="images/Screenshot 2024-12-11 at 11.07.54 PM.png" alt="drawing" width="600"/>
+
+Uniqueness Values:
+
+<img src="images/Screenshot 2024-12-11 at 11.08.03 PM.png" alt="drawing" width="600"/>
+
 
 #### Confirmatory Factor Analysis
 
