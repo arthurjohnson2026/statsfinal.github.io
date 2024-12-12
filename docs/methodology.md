@@ -82,11 +82,6 @@ Proposed two primary latent factors:
 - Conducted to explore variations across different financial metrics
 - Focused on inter-sector differences
 
-## Variable of Interest
-- Dependent Variable: Percentage Change in Stock Price (next year)
-- Created binary indicator: 
- - Up (1)
- - Down (0)
 
 ## Limitations and Considerations
 - High data complexity and noise in stock/financial datasets
