@@ -86,5 +86,3 @@ This analysis aims to bridge the gap between raw financial data and actionable i
 
 ---
 
-> For more details, visit the [project repository](https://github.com/yourusername/your-repo).
-
